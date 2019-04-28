@@ -1,0 +1,29 @@
+---
+- hosts: ansible-control
+  gather_facts: false
+  roles:
+    - ncds.pip
+    - { role: ncds.https-self-signed, become: true }
+  tags:
+    - certs
+
+- hosts: bastion
+  roles:
+    - ncds.pip
+  tasks:
+    - name: copy certs to nginx proxy
+      delegate_to: nginx-proxy
+      copy:
+        src: '{{item.f}}'
+        dest: /etc/nginx/certs/{{item.t}}
+        mode: '{{item.m}}' 
+      with_items:
+        - {f: '{{certificate_dir }}/{{ server_hostname }}/fullchain.pem', t: docker.local.crt, m: '0600'}
+        - {f: '{{certificate_dir }}/{{ server_hostname }}/privkey.pem', t: docker.local.pem, m: '0400'} 
+  tags:
+    - certs
+
+- hosts: bastion
+  gather_facts: true
+  roles:
+    - { role: knowleg.config-docker, docker_users: ['docker','deploy'], become: true }

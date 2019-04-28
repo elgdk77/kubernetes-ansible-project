@@ -1,0 +1,11 @@
+---
+#
+# Ansible Galaxy modules
+# 
+#
+- src: git+https://github.com/elgdk77/knowleg.config-docker.git
+  name: knowleg.config-docker
+  version: master
+
+- name: geerlingguy-epel
+

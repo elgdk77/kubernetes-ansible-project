@@ -1,0 +1,7 @@
+---
+ansible_connection: local
+
+pip_install_packages:
+  - pyopenssl
+
+package_manager: apt
